@@ -1,0 +1,104 @@
+import random 
+
+deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'A', 'J', 'Q', 'K', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'A', 'J', 'Q', 'K', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'A', 'J', 'Q', 'K', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'A', 'J', 'Q', 'K']
+playerHand = []
+dealerHand = []
+playerIn = True 
+dealerIn = True 
+
+def dealCard(turn):
+    card = random.choice(deck)
+    turn.append(card)
+    deck.remove(card)
+    
+def cardTotals(turn):
+    total = 0
+    aceCount = 0
+    face = ['J', 'Q', 'K']
+    for card in turn:
+        if card in range(1, 11):
+            total += card
+        elif card in face:
+            total += 10 
+        else:
+            total += 11
+            aceCount += 1
+    while aceCount and total > 21:
+        total -= 10
+        aceCount -=1
+    return total 
+
+def revealDealerHand():
+    if len(dealerHand) == 2:
+        return dealerHand[0]
+    elif len(dealerHand) > 2: 
+        return dealerHand[0], dealerHand[1]
+    
+
+for _ in range(2):
+    dealCard(playerHand)
+    dealCard(dealerHand)
+    
+betAmount = int(input("How much would you like to bet [Minium bet is 2$ Maximum bet is 500$]: "))
+if(betAmount >= 2 and betAmount <= 500):
+    while playerIn:
+        print ("Your hand is ", playerHand, " with a total of ", cardTotals(playerHand))
+        print ("The dealers hand is ", revealDealerHand(), " and X")
+        play = (input("1: Stand \n2: Hit "))
+        if play == '1':
+            playerIn = False 
+        elif play == '2':
+            dealCard(playerHand)
+        else:
+            print ("Error, input must be either a 1 or a 2, by default you stand.")
+            playerIn = False 
+        if cardTotals(playerHand) >= 21:
+            break
+        
+       
+    while dealerIn:
+        if cardTotals(dealerHand) > 16:
+                dealerIn = False 
+        else:
+            dealCard(dealerHand)
+        if cardTotals(dealerHand) > 21:
+            break
+    
+    if cardTotals(playerHand) == 21:
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("Blackjack! You won ", betAmount * 2.5, "$!")
+        
+    elif cardTotals(dealerHand) == 21:
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("Blackjack! Dealer wins!")
+        
+    elif cardTotals(dealerHand) == cardTotals(playerHand):
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("Tie! null bets")
+        
+    elif cardTotals(playerHand) > 21:
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("You bust! Dealer wins!")
+        
+    elif cardTotals(dealerHand) > 21:
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("Dealer busts! You win " , betAmount * 2, "$!")
+        
+    elif 21 - cardTotals(dealerHand) > 21 - cardTotals(playerHand):
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("You win ", betAmount * 2, " $!")
+        
+    elif 21 - cardTotals(dealerHand) < 21 - cardTotals(playerHand):
+        print("Your hand is " , playerHand, " for a total of ", cardTotals(playerHand), "\nThe dealers hand is ", dealerHand, " for a total of ", cardTotals(dealerHand))
+        print("Dealer wins!")
+else:
+    print("Bet is out of range")
+
+    
+    
+
+
+
+
+
+
